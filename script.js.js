@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SFG Weight Inspection</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>SFG Weight Inspection</h1>
+    <form id="calculator-form">
+        <label for="weightCap">Cap Weight (kg):</label>
+        <input type="number" id="weightCap" name="weightCap" step="any" required><br><br>
+
+        <label for="weightBottle">Bottle/ Tube/ Can/ Pail/ Drum/ IBC (kg):</label>
+        <input type="number" id="weightBottle" name="weightBottle" step="any" required><br><br>
+
+        <label for="density">Density (kg/L):</label>
+        <input type="number" id="density" name="density" step="any" required><br><br>
+
+        <label for="volume"> Size Volume (L):</label>
+        <input type="number" id="volume" name="volume" step="any" required><br><br>
+
+        <button type="button" onclick="calculateWeight()">Calculate</button>
+    </form>
+
+    <div id="result">
+        <h2>Results:</h2>
+        <p id="minWeightSFG"></p>
+        <p id="maxWeightSFG"></p>
+        <p id="minWeightToPack"></p>
+        <p id="maxWeightToPack"></p>
+    </div>
+
+    <button id="newCalculationButton" type="button" style="display:none;" onclick="newCalculation()">New Calculation</button>
+
+    <script src="script.js"></script>
+</body>
+</html>
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    margin: 20px;
+}
+
+h1 {
+    color: #343a40;
+}
+
+form {
+    margin-bottom: 20px;
+}
+
+label {
+    font-weight: bold;
+}
+
+input {
+    margin-bottom: 10px;
+    padding: 5px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+button {
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+#result {
+    margin-top: 20px;
+}
+
+#result p {
+    margin: 5px 0;
+    font-weight: bold;
+}
+function calculateWeight() {
+	const weightBottle = parseFloat(document.getElementById("weightBottle").value);
+	const weightCap = parseFloat(document.getElementById("weightCap").value);
+	const density = parseFloat(document.getElementById("density").value);
+	const volume = parseFloat(document.getElementById("volume").value);
+
+	if (isNaN(weightBottle) || isNaN(weightCap) || isNaN(density) || isNaN(volume)) {
+	   alert("Please enter valid numbers for all input fields.");
+	   return;
+	}
+
+	const weightOfOil = density * volume;
+	const MaxWeightSFG = weightOfOil + ((1 / 100) * weightOfOil);
+	const MaxWeight2Pack = (weightBottle + weightCap + MaxWeightSFG);
+	const MinWeight2Pack = weightBottle + weightCap + weightOfOil;
+
+	document.getElementById("minWeightSFG").textContent = "The minimum weight of SFG (kg): " + weightOfOil.toFixed(3) + " kg";
+	document.getElementById("maxWeightSFG").textContent = "The maximum weight of SFG (kg): " + MaxWeightSFG.toFixed(3) + " kg";
+	document.getElementById("minWeightToPack").textContent = "The minimum weight to pack (kg): " + MinWeight2Pack.toFixed(3) + " kg";
+	document.getElementById("maxWeightToPack").textContent = "The maximum weight to pack (kg): " + MaxWeight2Pack.toFixed(3) + " kg";
+
+	document.getElementById("newCalculationButton").style.display = "inline";
+}
+
+function newCalculation() {
+    document.getElementById("calculator-form").reset();
+    document.getElementById("result").querySelectorAll("p").forEach(p => p.textContent = "");
+    document.getElementById("newCalculationButton").style.display = "none";
+}
